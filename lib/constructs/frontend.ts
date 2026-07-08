@@ -18,6 +18,15 @@ export class Frontend extends Construct {
         origin: origins.S3BucketOrigin.withOriginAccessControl(props.webBucket),
       },
       defaultRootObject: "index.html",
+      priceClass: cloudfront.PriceClass.PRICE_CLASS_200,
+    });
+
+    // S3 Deploy
+    new s3deploy.BucketDeployment(this, "DeployWebsite", {
+      sources: [s3deploy.Source.asset("./assets/site")],
+      destinationBucket: props.webBucket,
+      distribution,
+      distributionPaths: ["/*"],
     });
   }
 }
