@@ -19,17 +19,40 @@ export class Backend extends Construct {
       handler: "handler",
     });
 
+    const listFunction = new nodejs.NodejsFunction(this, "List", {
+      entry: path.join(__dirname, "../../lambda/photos/index.ts"),
+      runtime: lambda.Runtime.NODEJS_24_X,
+      handler: "handler",
+    });
+
     // API Gateway
     const integration = new HttpLambdaIntegration(
       "HelloIntegration",
       helloFunction,
     );
-    const api = new apigwv2.HttpApi(this, "HttpApi", {});
+
+    const listIntegration = new HttpLambdaIntegration(
+      "ListIntegration",
+      listFunction,
+    );
+
+    const api = new apigwv2.HttpApi(this, "HttpApi", {
+      corsPreflight: {
+        allowOrigins: ["*"],
+        allowMethods: [apigwv2.CorsHttpMethod.GET],
+      },
+    });
 
     api.addRoutes({
       path: "/hello",
       methods: [apigwv2.HttpMethod.GET],
       integration: integration,
+    });
+
+    api.addRoutes({
+      path: "/photos",
+      methods: [apigwv2.HttpMethod.GET],
+      integration: listIntegration,
     });
 
     new cdk.CfnOutput(this, "HttpUrl", {
