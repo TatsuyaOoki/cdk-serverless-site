@@ -17,6 +17,9 @@ export class CdkServerlessSiteStack extends cdk.Stack {
     const frontend = new Frontend(this, "Frontend", {
       webBucket: storage.webBucket,
     });
-    new Backend(this, "Backend", {});
+    new Backend(this, "Backend", {
+      webBucket: storage.webBucket,
+      distribution: frontend.distribution,
+    });
   }
 }

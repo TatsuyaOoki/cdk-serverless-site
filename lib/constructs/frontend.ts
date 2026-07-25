@@ -9,6 +9,8 @@ export interface FrontendProps {
 }
 
 export class Frontend extends Construct {
+  public readonly distribution: cloudfront.IDistribution;
+
   constructor(scope: Construct, id: string, props: FrontendProps) {
     super(scope, id);
 
@@ -28,5 +30,6 @@ export class Frontend extends Construct {
       distribution,
       distributionPaths: ["/*"],
     });
+    this.distribution = distribution;
   }
 }
