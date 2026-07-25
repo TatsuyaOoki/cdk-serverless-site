@@ -22,6 +22,7 @@ export class Frontend extends Construct {
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_200,
     });
+    // distribution.addBehavior("/api", origins.HttpOrigin())
 
     // S3 Deploy
     new s3deploy.BucketDeployment(this, "DeployWebsite", {
