@@ -11,16 +11,11 @@ export const handler = async () => {
 
   const response = await documentClient.send(command);
 
-  const photos = (response.Items ?? []).map((item) => ({
-    title: item.title,
-    imageUrl: `https://${process.env.CLOUDFRONT_DOMAIN}/${item.key}`,
-  }));
-
   return {
     statusCode: 200,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(photos),
+    body: JSON.stringify(response.Items ?? []),
   };
 };

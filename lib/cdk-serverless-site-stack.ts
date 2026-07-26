@@ -14,12 +14,14 @@ export class CdkServerlessSiteStack extends cdk.Stack {
     super(scope, id, props);
 
     const storage = new Storage(this, "Storage", {});
-    const frontend = new Frontend(this, "Frontend", {
+
+    const backend = new Backend(this, "Backend", {
       webBucket: storage.webBucket,
     });
-    new Backend(this, "Backend", {
+
+    new Frontend(this, "Frontend", {
       webBucket: storage.webBucket,
-      distribution: frontend.distribution,
+      api: backend.api,
     });
   }
 }

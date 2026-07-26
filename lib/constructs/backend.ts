@@ -7,14 +7,13 @@ import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as path from "path";
-import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 
 export interface BackendProps {
   readonly webBucket: s3.IBucket;
-  readonly distribution: cloudfront.IDistribution;
 }
 
 export class Backend extends Construct {
+  public readonly api: apigwv2.HttpApi;
   constructor(scope: Construct, id: string, props: BackendProps) {
     super(scope, id);
 
@@ -35,7 +34,6 @@ export class Backend extends Construct {
       handler: "handler",
       environment: {
         TABLE_NAME: photoTable.tableName,
-        CLOUDFRONT_DOMAIN: props.distribution.distributionDomainName,
       },
     });
 
@@ -90,27 +88,26 @@ export class Backend extends Construct {
     });
 
     api.addRoutes({
-      path: "/photos",
+      path: "/api/photos",
       methods: [apigwv2.HttpMethod.GET],
       integration: listIntegration,
     });
 
     api.addRoutes({
-      path: "/photos/upload-url",
+      path: "/api/photos/upload-url",
       methods: [apigwv2.HttpMethod.POST],
       integration: uploadUrlIntegration,
     });
 
     api.addRoutes({
-      path: "/photos/register-db",
+      path: "/api/photos/register-db",
       methods: [apigwv2.HttpMethod.POST],
       integration: registerDbIntegration,
     });
 
-    new URL(api.httpApiName).
-
     new cdk.CfnOutput(this, "HttpUrl", {
       value: api.url!,
     });
+    this.api = api;
   }
 }

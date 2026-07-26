@@ -14,7 +14,7 @@ uploadButton.addEventListener("click", async () => {
     console.log(file);
 
     const response = await fetch(
-        "https://<API GW>.execute-api.us-east-1.amazonaws.com/photos/upload-url",
+        "/api/photos/upload-url",
         {
             method: "POST",
             headers: {
@@ -46,7 +46,7 @@ uploadButton.addEventListener("click", async () => {
     console.log(imageUrl);
 
     const registerResponse = await fetch(
-        "https://<API GW>.execute-api.us-east-1.amazonaws.com/photos/register-db",
+        "/api/photos/register-db",
         {
             method: "POST",
             headers: {
@@ -66,18 +66,19 @@ uploadButton.addEventListener("click", async () => {
 });
 
 button.addEventListener("click", async () => {
-    const response = await fetch("https://<API GW>.execute-api.us-east-1.amazonaws.com/photos");
+    const response = await fetch("/api/photos");
 
     const photos = await response.json();
 
     result.innerHTML = "";
 
+    const imageBaseUrl = window.location.origin;
     for (const photo of photos) {
     const card = document.createElement("div");
 
     card.innerHTML = `
         <h3>${photo.title}</h3>
-        <img src="${photo.imageUrl}" width="200">
+        <img src="${imageBaseUrl}/${photo.key}" width="200">
     `;
 
     result.appendChild(card);
