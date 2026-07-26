@@ -14,6 +14,10 @@ export interface BackendProps {
 
 export class Backend extends Construct {
   public readonly api: apigwv2.HttpApi;
+  public readonly listIntegration: HttpLambdaIntegration;
+  public readonly uploadUrlIntegration: HttpLambdaIntegration;
+  public readonly registerDbIntegration: HttpLambdaIntegration;
+
   constructor(scope: Construct, id: string, props: BackendProps) {
     super(scope, id);
 
@@ -76,38 +80,24 @@ export class Backend extends Construct {
     );
 
     const api = new apigwv2.HttpApi(this, "HttpApi", {
-      corsPreflight: {
-        allowOrigins: ["*"],
-        allowMethods: [
-          apigwv2.CorsHttpMethod.GET,
-          apigwv2.CorsHttpMethod.POST,
-          apigwv2.CorsHttpMethod.PUT,
-        ],
-        allowHeaders: ["Content-Type"],
-      },
-    });
-
-    api.addRoutes({
-      path: "/api/photos",
-      methods: [apigwv2.HttpMethod.GET],
-      integration: listIntegration,
-    });
-
-    api.addRoutes({
-      path: "/api/photos/upload-url",
-      methods: [apigwv2.HttpMethod.POST],
-      integration: uploadUrlIntegration,
-    });
-
-    api.addRoutes({
-      path: "/api/photos/register-db",
-      methods: [apigwv2.HttpMethod.POST],
-      integration: registerDbIntegration,
+      // corsPreflight: {
+      //   allowOrigins: ["*"],
+      //   allowMethods: [
+      //     apigwv2.CorsHttpMethod.GET,
+      //     apigwv2.CorsHttpMethod.POST,
+      //     apigwv2.CorsHttpMethod.PUT,
+      //   ],
+      //   allowHeaders: ["Content-Type"],
+      // },
     });
 
     new cdk.CfnOutput(this, "HttpUrl", {
       value: api.url!,
     });
+
     this.api = api;
+    this.listIntegration = listIntegration;
+    this.uploadUrlIntegration = uploadUrlIntegration;
+    this.registerDbIntegration = registerDbIntegration;
   }
 }

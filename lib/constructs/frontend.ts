@@ -46,5 +46,6 @@ export class Frontend extends Construct {
       distribution,
       distributionPaths: ["/*"],
     });
+    this.distribution = distribution;
   }
 }
